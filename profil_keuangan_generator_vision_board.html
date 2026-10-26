@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Keuangan & Generator Canvas Vision Board 5 Tahun</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              emerald: '#10B981',
+              accent: '#00F59B',
+              cyan: '#06B6D4',
+              amber: '#F59E0B',
+              purple: '#8B5CF6'
+            },
+            dark: {
+              bg: '#121212',
+              card: '#1E1E1E',
+              input: '#2A2A2A',
+              border: '#333333'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #F3F4F6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .glass-card {
+      background: rgba(30, 30, 30, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glow-hover:hover {
+      box-shadow: 0 0 20px -3px rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2A2A;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #333333;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-emerald selection:text-slate-950 antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-neutral-800 bg-neutral-900/60 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-emerald to-brand-cyan flex items-center justify-center text-slate-950 font-black shadow-lg shadow-emerald-500/20">
+          <i data-lucide="layout-dashboard" class="w-5 h-5 stroke-[2.5]"></i>
+        </div>
+        <span class="font-extrabold text-lg tracking-tight text-white flex items-center gap-1">
+          FIN<span class="text-brand-emerald">VISION</span> <span class="text-xs font-mono px-2 py-0.5 rounded bg-neutral-800 text-neutral-400">5Y</span>
+        </span>
+      </div>
+      
+      <!-- Stepper Status Header -->
+      <div id="header-progress" class="flex items-center gap-3 text-xs font-mono text-neutral-400">
+        <span class="hidden sm:inline">PROGRES:</span>
+        <div class="w-28 sm:w-36 h-2 bg-neutral-800 rounded-full overflow-hidden">
+          <div id="progress-bar-inner" class="h-full bg-brand-emerald transition-all duration-500 w-1/3"></div>
+        </div>
+        <span id="progress-text" class="text-brand-emerald font-semibold">LANGKAH 1/3</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 flex-1 w-full">
+
+    <!-- Stepper Indicator -->
+    <div class="mb-10">
+      <div class="flex justify-between items-center relative">
+        <div class="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-neutral-800 w-full -z-10"></div>
+        
+        <!-- Step 1 Indicator -->
+        <div id="step-node-1" class="flex flex-col items-center gap-2">
+          <div class="w-10 h-10 rounded-full bg-brand-emerald text-slate-950 font-bold flex items-center justify-center ring-4 ring-[#121212] transition-all duration-300">
+            1
+          </div>
+          <span class="text-xs font-semibold text-brand-emerald hidden sm:block">AFIRMASI</span>
+        </div>
+
+        <!-- Step 2 Indicator -->
+        <div id="step-node-2" class="flex flex-col items-center gap-2">
+          <div class="w-10 h-10 rounded-full bg-neutral-800 text-neutral-400 font-bold flex items-center justify-center ring-4 ring-[#121212] transition-all duration-300">
+            2
+          </div>
+          <span class="text-xs font-semibold text-neutral-500 hidden sm:block">TARGET & KEUANGAN</span>
+        </div>
+
+        <!-- Step 3 Indicator -->
+        <div id="step-node-3" class="flex flex-col items-center gap-2">
+          <div class="w-10 h-10 rounded-full bg-neutral-800 text-neutral-400 font-bold flex items-center justify-center ring-4 ring-[#121212] transition-all duration-300">
+            3
+          </div>
+          <span class="text-xs font-semibold text-neutral-500 hidden sm:block">PROFIL & CANVAS PROMPT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 1: AFIRMASI KEUANGAN -->
+    <section id="step-1" class="space-y-6 transition-all duration-300">
+      <div class="text-center space-y-2 mb-8">
+        <span class="text-xs font-mono tracking-wider text-brand-emerald uppercase bg-brand-emerald/10 px-3 py-1 rounded-full border border-brand-emerald/20">Langkah 1 dari 3</span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">Pilih Afirmasi Kelimpahan Anda</h1>
+        <p class="text-neutral-400 max-w-xl mx-auto text-sm sm:text-base">Pilih satu filosofi finansial yang paling berresonansi dengan visi pertumbuhan 5 tahun Anda.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Option 1 -->
+        <div onclick="selectAffirmation(1)" id="aff-card-1" class="glow-hover glass-card p-6 rounded-2xl cursor-pointer transition-all duration-200 relative group border border-neutral-800">
+          <div class="flex items-start justify-between mb-3">
+            <div class="p-2.5 rounded-xl bg-emerald-500/10 text-brand-emerald group-hover:bg-brand-emerald group-hover:text-slate-950 transition-colors">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <div class="check-icon opacity-0 text-brand-emerald transition-opacity">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+          </div>
+          <p class="text-neutral-200 text-sm sm:text-base leading-relaxed font-medium">
+            "Saya bijak mengelola setiap sumber daya dan terus bertumbuh secara finansial."
+          </p>
+        </div>
+
+        <!-- Option 2 -->
+        <div onclick="selectAffirmation(2)" id="aff-card-2" class="glow-hover glass-card p-6 rounded-2xl cursor-pointer transition-all duration-200 relative group border border-neutral-800">
+          <div class="flex items-start justify-between mb-3">
+            <div class="p-2.5 rounded-xl bg-cyan-500/10 text-brand-cyan group-hover:bg-brand-emerald group-hover:text-slate-950 transition-colors">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div class="check-icon opacity-0 text-brand-emerald transition-opacity">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+          </div>
+          <p class="text-neutral-200 text-sm sm:text-base leading-relaxed font-medium">
+            "Uang adalah alat untuk menciptakan kebebasan, dampak positif, dan masa depan yang aman."
+          </p>
+        </div>
+
+        <!-- Option 3 -->
+        <div onclick="selectAffirmation(3)" id="aff-card-3" class="glow-hover glass-card p-6 rounded-2xl cursor-pointer transition-all duration-200 relative group border border-neutral-800">
+          <div class="flex items-start justify-between mb-3">
+            <div class="p-2.5 rounded-xl bg-purple-500/10 text-brand-purple group-hover:bg-brand-emerald group-hover:text-slate-950 transition-colors">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
+            </div>
+            <div class="check-icon opacity-0 text-brand-emerald transition-opacity">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+          </div>
+          <p class="text-neutral-200 text-sm sm:text-base leading-relaxed font-medium">
+            "Setiap keputusan finansial hari ini adalah investasi untuk versi terbaik diri saya di masa depan."
+          </p>
+        </div>
+
+        <!-- Option 4 -->
+        <div onclick="selectAffirmation(4)" id="aff-card-4" class="glow-hover glass-card p-6 rounded-2xl cursor-pointer transition-all duration-200 relative group border border-neutral-800">
+          <div class="flex items-start justify-between mb-3">
+            <div class="p-2.5 rounded-xl bg-amber-500/10 text-brand-amber group-hover:bg-brand-emerald group-hover:text-slate-950 transition-colors">
+              <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+            <div class="check-icon opacity-0 text-brand-emerald transition-opacity">
+              <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+            </div>
+          </div>
+          <p class="text-neutral-200 text-sm sm:text-base leading-relaxed font-medium">
+            "Saya fokus membangun nilai, konsistensi, dan kelimpahan secara berkelanjutan."
+          </p>
+        </div>
+      </div>
+
+      <!-- Custom Affirmation Option -->
+      <div class="glass-card p-6 rounded-2xl border border-neutral-800 space-y-3">
+        <label for="custom-aff-input" class="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+          <i data-lucide="pen-tool" class="w-4 h-4 text-brand-emerald"></i>
+          Atau Tuliskan Afirmasi Kustom Milik Anda Sendiri:
+        </label>
+        <textarea id="custom-aff-input" rows="2" placeholder="Contoh: Saya berkomitmen membangun portofolio bisnis dan investasi yang memberikan dampak positif..." oninput="handleCustomAffirmation()" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-emerald transition-colors resize-none"></textarea>
+      </div>
+
+      <div class="pt-4 flex justify-end">
+        <button id="btn-to-step-2" disabled onclick="goToStep(2)" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-neutral-800 text-neutral-500 font-bold flex items-center justify-center gap-2 cursor-not-allowed transition-all">
+          Lanjut ke Kuesioner Target
+          <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: KUESIONER TARGET & KEUANGAN -->
+    <section id="step-2" class="hidden space-y-8 transition-all duration-300">
+      <div class="text-center space-y-2 mb-6">
+        <span class="text-xs font-mono tracking-wider text-brand-emerald uppercase bg-brand-emerald/10 px-3 py-1 rounded-full border border-brand-emerald/20">Langkah 2 dari 3</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Target 5 Tahun & Kondisi Keuangan</h2>
+        <p class="text-neutral-400 text-sm sm:text-base">Isi estimasi target agar algoritma dapat menganalisis rasio kecukupan & menyusun Canvas Vision Board.</p>
+      </div>
+
+      <form id="finance-form" class="space-y-6" onsubmit="event.preventDefault(); calculateProfile();">
+        
+        <!-- Target Focus Selection -->
+        <div class="glass-panel glass-card p-6 sm:p-8 rounded-2xl space-y-4 border border-neutral-800">
+          <label class="block text-base font-bold text-white flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-brand-emerald/20 text-brand-emerald text-sm flex items-center justify-center font-mono">1</span>
+            Fokus Utama Target 5 Tahun Ke Depan
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="target_focus" value="S2 / Spesialis / Pendidikan Tinggi" class="mt-1 accent-emerald-500" required>
+              <div>
+                <span class="font-semibold text-white block text-sm">S2 / Spesialis / Pendidikan Tinggi</span>
+                <span class="text-xs text-neutral-400">Peningkatan kapasitas akademik & keahlian profesional.</span>
+              </div>
+            </label>
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="target_focus" value="Tabungan Dana Darurat & Investasi Pertama" class="mt-1 accent-emerald-500">
+              <div>
+                <span class="font-semibold text-white block text-sm">Dana Darurat & Investasi Pertama</span>
+                <span class="text-xs text-neutral-400">Fondasi likuiditas aman & portofolio awal.</span>
+              </div>
+            </label>
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="target_focus" value="Modal Bisnis / Innovator Project" class="mt-1 accent-emerald-500">
+              <div>
+                <span class="font-semibold text-white block text-sm">Modal Bisnis / Innovator Project</span>
+                <span class="text-xs text-neutral-400">Pendanaan venture mandiri atau rintisan proyek.</span>
+              </div>
+            </label>
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="target_focus" value="Membeli Properti / Rumah" class="mt-1 accent-emerald-500">
+              <div>
+                <span class="font-semibold text-white block text-sm">Membeli Properti / Rumah</span>
+                <span class="text-xs text-neutral-400">Uang muka DP rumah atau aset riil.</span>
+              </div>
+            </label>
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all sm:col-span-2">
+              <input type="radio" name="target_focus" value="Kebebasan Finansial Awal (Portofolio Mandiri)" class="mt-1 accent-emerald-500">
+              <div>
+                <span class="font-semibold text-white block text-sm">Kebebasan Finansial Awal</span>
+                <span class="text-xs text-neutral-400">Akumulasi aset produktif penghasil passive income awal.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Target Amount & Monthly Allocation -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Estimasi Target Dana -->
+          <div class="glass-card p-6 rounded-2xl space-y-3 border border-neutral-800">
+            <label class="block text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="target" class="w-4 h-4 text-brand-emerald"></i>
+              Estimasi Target Dana (IDR)
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-neutral-400 text-sm">Rp</span>
+              <input type="number" id="input-target-amount" min="1000000" step="5000000" value="150000000" required oninput="formatCurrencyDisplay()" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl py-3 pl-10 pr-3 font-mono text-white text-sm focus:outline-none focus:border-brand-emerald">
+            </div>
+            <p id="target-amount-formatted" class="text-xs font-mono text-brand-emerald">Terbilang: Rp 150.000.000</p>
+          </div>
+
+          <!-- Alokasi Tabungan Bulanan -->
+          <div class="glass-card p-6 rounded-2xl space-y-3 border border-neutral-800">
+            <label class="block text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="wallet" class="w-4 h-4 text-brand-cyan"></i>
+              Alokasi Tabungan Bulanan Saat Ini (IDR)
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-neutral-400 text-sm">Rp</span>
+              <input type="number" id="input-monthly-savings" min="100000" step="500000" value="2500000" required oninput="formatCurrencyDisplay()" class="w-full bg-neutral-900 border border-neutral-700 rounded-xl py-3 pl-10 pr-3 font-mono text-white text-sm focus:outline-none focus:border-brand-emerald">
+            </div>
+            <p id="monthly-savings-formatted" class="text-xs font-mono text-brand-cyan">Terbilang: Rp 2.500.000 / bulan</p>
+          </div>
+
+        </div>
+
+        <!-- Risk Tolerance -->
+        <div class="glass-card p-6 sm:p-8 rounded-2xl space-y-4 border border-neutral-800">
+          <label class="block text-base font-bold text-white flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg bg-brand-emerald/20 text-brand-emerald text-sm flex items-center justify-center font-mono">2</span>
+            Toleransi Risiko & Gaya Investasi
+          </label>
+          
+          <div class="space-y-3 pt-1">
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="risk_tolerance" value="Konservatif" class="mt-1 accent-emerald-500" required>
+              <div>
+                <span class="font-semibold text-white block text-sm">Konservatif</span>
+                <span class="text-xs text-neutral-400">Prioritas utama keutuhan modal awal. Instrumen: Deposito, Pasar Uang (RDPU), Surat Berharga Negara.</span>
+              </div>
+            </label>
+
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="risk_tolerance" value="Moderat" class="mt-1 accent-emerald-500" checked>
+              <div>
+                <span class="font-semibold text-white block text-sm">Moderat</span>
+                <span class="text-xs text-neutral-400">Keseimbangan pertumbuhan jangka menengah dan stabilitas. Instrumen: Reksa Dana Campuran/Obligasi & Index ETF.</span>
+              </div>
+            </label>
+
+            <label class="q-option flex items-start gap-3 p-4 rounded-xl border border-neutral-800 bg-neutral-900/60 cursor-pointer hover:border-brand-emerald/50 transition-all">
+              <input type="radio" name="risk_tolerance" value="Agresif" class="mt-1 accent-emerald-500">
+              <div>
+                <span class="font-semibold text-white block text-sm">Agresif</span>
+                <span class="text-xs text-neutral-400">Fokus pertumbuhan akumulasi nilai maksimal. Toleran volatilitas tinggi. Instrumen: Saham, Crypto, Bisnis.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Form Navigation -->
+        <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-between">
+          <button type="button" onclick="goToStep(1)" class="px-6 py-3 rounded-xl border border-neutral-700 hover:bg-neutral-800 text-neutral-300 font-semibold transition-all">
+            Kembali
+          </button>
+          <button type="submit" class="px-8 py-3.5 rounded-xl bg-brand-emerald text-slate-950 font-bold hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2">
+            Generate Profil & Prompt AI
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- STEP 3: DASHBOARD HASIL & PROMPT READY-TO-COPY -->
+    <section id="step-3" class="hidden space-y-8 transition-all duration-300">
+      
+      <div class="text-center space-y-2">
+        <span class="text-xs font-mono tracking-wider text-brand-emerald uppercase bg-brand-emerald/10 px-3 py-1 rounded-full border border-brand-emerald/20">Hasil Analisis Finansial</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Dashboard Visi & Prompt AI</h2>
+        <p class="text-neutral-400 text-sm sm:text-base">Gunakan prompt di bawah ini untuk langsung membuat Canvas Vision Board & Template Bingo Menabung di AI (ChatGPT / Gemini / Midjourney / Canva AI).</p>
+      </div>
+
+      <!-- Financial Analysis Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Risk Profile Card -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col items-center text-center justify-center border-t-4 border-t-brand-emerald">
+          <span class="text-xs font-mono text-neutral-400 uppercase tracking-widest mb-1">Profil Risiko</span>
+          <div id="res-risk-badge" class="w-14 h-14 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center my-2">
+            <i data-lucide="shield" class="w-7 h-7"></i>
+          </div>
+          <h3 id="res-risk-title" class="text-xl font-extrabold text-white">MODERAT</h3>
+          <p id="res-risk-desc" class="text-neutral-400 text-xs mt-2 leading-relaxed">Alokasi seimbang pertumbuhan & stabilitas modal.</p>
+        </div>
+
+        <!-- Feasibility & Projection Card -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between border border-neutral-800">
+          <div>
+            <span class="text-xs font-mono text-brand-cyan uppercase tracking-wider block mb-1">Rasio Kemampuan 5 Tahun</span>
+            <div class="flex items-baseline gap-2">
+              <span id="res-projected-amount" class="text-2xl font-mono font-bold text-white">Rp 150M</span>
+              <span class="text-xs text-neutral-400">/ 60 Bulan</span>
+            </div>
+            <div class="w-full bg-neutral-800 h-2 rounded-full mt-3 overflow-hidden">
+              <div id="res-progress-ratio" class="h-full bg-brand-cyan transition-all duration-500 w-full"></div>
+            </div>
+          </div>
+          <p id="res-ratio-note" class="text-xs text-neutral-300 mt-3 leading-relaxed">
+            <!-- Dynamic Feasibility Text -->
+          </p>
+        </div>
+
+        <!-- Affirmation Summary -->
+        <div class="glass-card p-6 rounded-2xl flex flex-col justify-between border border-neutral-800">
+          <span class="text-xs font-mono text-brand-amber uppercase tracking-wider block mb-1">Afirmasi Pilihan</span>
+          <p id="res-aff-quote" class="text-xs sm:text-sm text-neutral-200 italic font-medium leading-relaxed my-2">
+            "..."
+          </p>
+          <span class="text-[10px] text-neutral-500 font-mono">Ditanamkan pada Vision Board & Bingo</span>
+        </div>
+
+      </div>
+
+      <!-- Concrete Action Card -->
+      <div class="glass-card p-6 rounded-2xl border-l-4 border-l-brand-emerald space-y-3">
+        <div class="flex items-center gap-2 text-brand-emerald">
+          <i data-lucide="zap" class="w-5 h-5"></i>
+          <h3 class="text-base font-bold text-white">1 Langkah Konkret Pertama (Minggu Ini)</h3>
+        </div>
+        <p id="res-action-step" class="text-sm text-neutral-200 leading-relaxed font-medium">
+          <!-- Dynamic Action Step -->
+        </p>
+      </div>
+
+      <!-- PROMPT OUTPUT 1: CANVAS VISION BOARD -->
+      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-brand-emerald/40 space-y-4 relative overflow-hidden bg-gradient-to-b from-neutral-900/90 to-neutral-950">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-4">
+          <div class="flex items-center gap-2">
+            <div class="p-2 rounded-lg bg-brand-emerald/20 text-brand-emerald">
+              <i data-lucide="bot" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-base">1. Prompt AI Canvas Vision Board 5 Tahun</h3>
+              <p class="text-xs text-neutral-400">Gunakan untuk membuat web app / komponen UI visual dashboard 5 tahun.</p>
+            </div>
+          </div>
+
+          <button onclick="copyToClipboard('prompt-output-box', 'Prompt Vision Board Berhasil Disalin!')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-emerald hover:bg-emerald-400 text-slate-950 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all cursor-pointer">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>Salin Prompt Vision Board</span>
+          </button>
+        </div>
+
+        <div class="relative">
+          <pre id="prompt-output-box" class="w-full bg-neutral-950 p-4 rounded-xl border border-neutral-800 font-mono text-xs text-emerald-300 leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-80 select-all">
+<!-- Generated Vision Board Prompt Will Appear Here -->
+          </pre>
+        </div>
+      </div>
+
+      <!-- PROMPT OUTPUT 2: BINGO TARGET NABUNG -->
+      <div class="glass-card p-6 sm:p-8 rounded-2xl border border-brand-purple/40 space-y-4 relative overflow-hidden bg-gradient-to-b from-neutral-900/90 to-neutral-950">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-4">
+          <div class="flex items-center gap-2">
+            <div class="p-2 rounded-lg bg-brand-purple/20 text-brand-purple">
+              <i data-lucide="grid" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-base">2. Prompt AI Printable "BINGO Nabung 5 Tahun"</h3>
+              <p class="text-xs text-neutral-400">Salin prompt ini ke ChatGPT / Midjourney / DALL-E / Canva untuk membuat poster/kartu Bingo Tracker.</p>
+            </div>
+          </div>
+
+          <button onclick="copyToClipboard('bingo-prompt-output-box', 'Prompt Bingo Berhasil Disalin!')" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand-purple hover:bg-purple-400 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 transition-all cursor-pointer">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>Salin Prompt Bingo</span>
+          </button>
+        </div>
+
+        <div class="relative">
+          <pre id="bingo-prompt-output-box" class="w-full bg-neutral-950 p-4 rounded-xl border border-neutral-800 font-mono text-xs text-purple-300 leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-80 select-all">
+<!-- Generated Bingo Prompt Will Appear Here -->
+          </pre>
+        </div>
+      </div>
+
+      <!-- Reset / Re-edit Action -->
+      <div class="flex justify-between items-center pt-2">
+        <button onclick="goToStep(2)" class="px-6 py-2.5 rounded-xl border border-neutral-700 hover:bg-neutral-800 text-neutral-300 text-xs font-semibold transition-all flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-4 h-4"></i>
+          Edit Data Keuangan
+        </button>
+        <button onclick="resetApp()" class="px-6 py-2.5 rounded-xl border border-neutral-800 hover:bg-neutral-800 text-neutral-400 text-xs font-semibold transition-all">
+          Mulai Dari Awal
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-neutral-900 text-white border border-brand-emerald px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-3 z-50">
+    <i data-lucide="check-circle" class="w-5 h-5 text-brand-emerald"></i>
+    <span id="toast-text" class="text-sm font-medium">Berhasil Disalin!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-neutral-900 py-6 text-center text-xs text-neutral-500">
+    FinVision 5-Year Canvas Prompt Generator &bull; Client-Side Interactive Tool
+  </footer>
+
+  <!-- App Script -->
+  <script>
+    // App State
+    let selectedAffirmation = "";
+    let selectedAffId = null;
+
+    const defaultAffirmations = {
+      1: "Saya bijak mengelola setiap sumber daya dan terus bertumbuh secara finansial.",
+      2: "Uang adalah alat untuk menciptakan kebebasan, dampak positif, dan masa depan yang aman.",
+      3: "Setiap keputusan finansial hari ini adalah investasi untuk versi terbaik diri saya di masa depan.",
+      4: "Saya fokus membangun nilai, konsistensi, dan kelimpahan secara berkelanjutan."
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      formatCurrencyDisplay();
+    });
+
+    // Handle Affirmation Selection
+    function selectAffirmation(id) {
+      selectedAffId = id;
+      selectedAffirmation = defaultAffirmations[id];
+      document.getElementById('custom-aff-input').value = "";
+
+      // UI Card Update
+      for (let i = 1; i <= 4; i++) {
+        const card = document.getElementById(`aff-card-${i}`);
+        const check = card.querySelector('.check-icon');
+        if (i === id) {
+          card.classList.add('border-brand-emerald', 'bg-neutral-900/80');
+          card.classList.remove('border-neutral-800');
+          check.classList.remove('opacity-0');
+        } else {
+          card.classList.remove('border-brand-emerald', 'bg-neutral-900/80');
+          card.classList.add('border-neutral-800');
+          check.classList.add('opacity-0');
+        }
+      }
+
+      enableNextStep1();
+    }
+
+    function handleCustomAffirmation() {
+      const customVal = document.getElementById('custom-aff-input').value.trim();
+      if (customVal.length > 0) {
+        selectedAffirmation = customVal;
+        selectedAffId = 'custom';
+        
+        // Unselect cards
+        for (let i = 1; i <= 4; i++) {
+          const card = document.getElementById(`aff-card-${i}`);
+          card.classList.remove('border-brand-emerald', 'bg-neutral-900/80');
+          card.classList.add('border-neutral-800');
+          card.querySelector('.check-icon').classList.add('opacity-0');
+        }
+        enableNextStep1();
+      } else {
+        if (selectedAffId === 'custom') {
+          selectedAffirmation = "";
+          disableNextStep1();
+        }
+      }
+    }
+
+    function enableNextStep1() {
+      const btn = document.getElementById('btn-to-step-2');
+      btn.disabled = false;
+      btn.className = "w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-emerald text-slate-950 font-bold hover:bg-emerald-400 shadow-lg shadow-emerald-500/20 cursor-pointer transition-all flex items-center justify-center gap-2";
+    }
+
+    function disableNextStep1() {
+      const btn = document.getElementById('btn-to-step-2');
+      btn.disabled = true;
+      btn.className = "w-full sm:w-auto px-8 py-3.5 rounded-xl bg-neutral-800 text-neutral-500 font-bold flex items-center justify-center gap-2 cursor-not-allowed transition-all";
+    }
+
+    // Step Navigation
+    function goToStep(step) {
+      document.getElementById('step-1').classList.add('hidden');
+      document.getElementById('step-2').classList.add('hidden');
+      document.getElementById('step-3').classList.add('hidden');
+
+      document.getElementById(`step-${step}`).classList.remove('hidden');
+
+      const progressBar = document.getElementById('progress-bar-inner');
+      const progressText = document.getElementById('progress-text');
+
+      if (step === 1) {
+        progressBar.style.width = '33%';
+        progressText.innerText = 'LANGKAH 1/3';
+      } else if (step === 2) {
+        progressBar.style.width = '66%';
+        progressText.innerText = 'LANGKAH 2/3';
+      } else if (step === 3) {
+        progressBar.style.width = '100%';
+        progressText.innerText = 'SELESAI';
+      }
+
+      updateStepNodes(step);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateStepNodes(currentStep) {
+      for (let i = 1; i <= 3; i++) {
+        const node = document.getElementById(`step-node-${i}`).querySelector('div');
+        if (i <= currentStep) {
+          node.className = "w-10 h-10 rounded-full bg-brand-emerald text-slate-950 font-bold flex items-center justify-center ring-4 ring-[#121212] transition-all duration-300";
+        } else {
+          node.className = "w-10 h-10 rounded-full bg-neutral-800 text-neutral-400 font-bold flex items-center justify-center ring-4 ring-[#121212] transition-all duration-300";
+        }
+      }
+    }
+
+    // Format Currency Numbers
+    function formatCurrencyDisplay() {
+      const targetVal = parseFloat(document.getElementById('input-target-amount').value) || 0;
+      const monthlyVal = parseFloat(document.getElementById('input-monthly-savings').value) || 0;
+
+      document.getElementById('target-amount-formatted').innerText = `Terbilang: ${formatIDR(targetVal)}`;
+      document.getElementById('monthly-savings-formatted').innerText = `Terbilang: ${formatIDR(monthlyVal)} / bulan`;
+    }
+
+    function formatIDR(num) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+    }
+
+    // Main Analysis & Prompt Generation Logic
+    function calculateProfile() {
+      const form = document.getElementById('finance-form');
+      const formData = new FormData(form);
+
+      const targetFocus = formData.get('target_focus');
+      const targetAmount = parseFloat(document.getElementById('input-target-amount').value) || 0;
+      const monthlySavings = parseFloat(document.getElementById('input-monthly-savings').value) || 0;
+      const riskTolerance = formData.get('risk_tolerance');
+
+      // 5 Years Calculation (60 Months)
+      const totalAccumulated5Y = monthlySavings * 60;
+      const ratioPercentage = Math.round((totalAccumulated5Y / targetAmount) * 100);
+
+      // Render Dashboard Summaries
+      document.getElementById('res-risk-title').innerText = riskTolerance.toUpperCase();
+      document.getElementById('res-aff-quote').innerText = `"${selectedAffirmation}"`;
+      document.getElementById('res-projected-amount').innerText = formatIDR(totalAccumulated5Y);
+      
+      const ratioBar = document.getElementById('res-progress-ratio');
+      ratioBar.style.width = `${Math.min(ratioPercentage, 100)}%`;
+
+      let ratioNote = "";
+      if (ratioPercentage >= 100) {
+        ratioNote = `🟢 <strong>Sangat Realistis (${ratioPercentage}%)</strong>. Tanpa pertumbuhan investasi pun, alokasi tabungan Anda mencukupi target 5 tahun.`;
+      } else if (ratioPercentage >= 60) {
+        ratioNote = `🟡 <strong>Cukup Baik (${ratioPercentage}%)</strong>. Diperlukan return investasi (~6-10% p.a.) atau kenaikan bertahap penghasilan untuk menutupi selisih.`;
+      } else {
+        ratioNote = `🟠 <strong>Tantangan (${ratioPercentage}%)</strong>. Direkomendasikan melakukan re-alokasi anggaran atau mencari sumber income tambahan (side hustle).`;
+      }
+      document.getElementById('res-ratio-note').innerHTML = ratioNote;
+
+      // Concrete Action Step
+      const concreteAction = generateConcreteAction(targetFocus, riskTolerance);
+      document.getElementById('res-action-step').innerText = concreteAction;
+
+      // Generate AI Prompts
+      const visionPrompt = generateCanvasVisionBoardPrompt({
+        affirmation: selectedAffirmation,
+        targetFocus: targetFocus,
+        targetAmount: formatIDR(targetAmount),
+        monthlySavings: formatIDR(monthlySavings),
+        totalAccumulated5Y: formatIDR(totalAccumulated5Y),
+        ratioPercentage: ratioPercentage,
+        riskTolerance: riskTolerance,
+        concreteAction: concreteAction
+      });
+
+      const bingoPrompt = generateBingoPrompt({
+        targetFocus: targetFocus,
+        targetAmountNum: targetAmount,
+        targetAmountFormatted: formatIDR(targetAmount),
+        affirmation: selectedAffirmation
+      });
+
+      document.getElementById('prompt-output-box').innerText = visionPrompt;
+      document.getElementById('bingo-prompt-output-box').innerText = bingoPrompt;
+
+      goToStep(3);
+    }
+
+    function generateConcreteAction(focus, risk) {
+      if (focus.includes("Dana Darurat")) {
+        return "Buka rekening RDPU (Reksa Dana Pasar Uang) terpisah minggu ini dan aktifkan fitur auto-debit bulanan tepat di tanggal gajian.";
+      } else if (focus.includes("S2")) {
+        return "Riset estimasi total biaya kuliah S2/Spesialis dan buat rekening sinking fund khusus berlabel 'Pendidikan 5Y'.";
+      } else if (focus.includes("Modal Bisnis")) {
+        return "Garis bawahi 1 keahlian utama dan buat akun tabungan bisnis terpisah untuk menampung alokasi modal rintisan.";
+      } else if (focus.includes("Properti")) {
+        return "Riset area target properti & mulai konsisten mengalokasikan dana ke instrumen investasi berisiko rendah-moderat untuk DP.";
+      } else {
+        return "Lakukan audit arus kas bulanan (cash flow audit) dan langsung eksekusi auto-investasi ke indeks portofolio pilihan.";
+      }
+    }
+
+    // AI Prompt Generator Builder - Vision Board
+    function generateCanvasVisionBoardPrompt(data) {
+      return `Buatkan aplikasi web interaktif / komponen UI React "5-Year Financial Canvas Vision Board" berbasis Tailwind CSS modern.
+
+=== KONTEKS & DATA USER ===
+- Afirmasi Keuangan Utama: "${data.affirmation}"
+- Target Utama 5 Tahun: ${data.targetFocus}
+- Nominal Target Dana 5 Tahun: ${data.targetAmount}
+- Alokasi Tabungan Bulanan Saat Ini: ${data.monthlySavings} / bulan
+- Proyeksi Tabungan Kumulatif (60 Bulan): ${data.totalAccumulated5Y} (Tingkat Kecukupan: ${data.ratioPercentage}%)
+- Profil Risiko & Gaya Investasi: ${data.riskTolerance}
+- 1 Langkah Konkret Awal: ${data.concreteAction}
+
+=== SPESIFIKASI LAYOUT & DESAIN VISUAL CANVAS ===
+1. Estetika Dashboard: Dark mode bernuansa futuristik elegan (background #121212, card #1E1E1E, aksen Emerald Green #10B981, Cyan #06B6D4, dan Gold/Amber #F59E0B).
+2. Tampilan Kartu Vision Board (Multi-Widget Grid):
+   - Header Banner: Tampilkan Afirmasi Pilihan sebagai kutipan emas (glowing quote widget).
+   - Milestone Timeline (Tahun 1 s.d. Tahun 5):
+     * Tahun 1: Fondasi & Auto-debit (Fokus: ${data.concreteAction})
+     * Tahun 2: Konsistensi Pertumbuhan Modal & Evaluasi Portofolio ${data.riskTolerance}
+     * Tahun 3: Mid-way Review (Pencapaian 50% Target ${data.targetFocus})
+     * Tahun 4: Akselerasi & Diversifikasi Aset
+     * Tahun 5: Pencapaian Target Utama (${data.targetAmount})
+   - Widget Tracker Visual Progress: Progress bar interaktif / ring chart yang menunjukkan rasio target (${data.ratioPercentage}%).
+   - Widget Strategi Alokasi Aset sesuai Profil ${data.riskTolerance} (misal: porsi Kas/RDPU, SBN, Obligasi, atau Saham).
+   - Widget "Daily Reminder / Action Checklist" interaktif yang bisa dicentang pengguna.
+
+=== INSTRUKSI TINGKAT RENDER AI ===
+- Berikan output kode HTML / React lengkap satu berkas (single-file), responsif di mobile/desktop, serta menarik secara visual dengan efek glassmorphism, border halus, dan icon Lucide yang sesuai.`;
+    }
+
+    // AI Prompt Generator Builder - Bingo Target
+    function generateBingoPrompt(data) {
+      const targetVal = data.targetAmountNum;
+      
+      // Calculate 5x5 grid breakdowns (25 slots)
+      // We generate 5 unique tiered amounts so total sums up to targetVal when distributed 5 times each
+      const slotBase = targetVal / 25;
+      const step1 = Math.round((slotBase * 0.5) / 50000) * 50000 || 50000;
+      const step2 = Math.round((slotBase * 0.8) / 50000) * 50000 || 100000;
+      const step3 = Math.round((slotBase * 1.0) / 50000) * 50000 || 150000;
+      const step4 = Math.round((slotBase * 1.2) / 50000) * 50000 || 200000;
+      const step5 = Math.max(50000, targetVal - (5 * (step1 + step2 + step3 + step4))) / 5;
+
+      const fmt = (num) => {
+        if (num >= 1000000) return `${(num / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 1 })} Juta`;
+        return `${Math.round(num / 1000)}rb`;
+      };
+
+      const bingoPerLineReward = formatIDR(targetVal / 5);
+
+      return `Buatkan layout desain printable / poster tracker keuangan dengan tema "BINGO NABUNG ${data.targetAmountFormatted}".
+
+=== PERINTAH DESAIN VISUAL & INFOGRAFIS ===
+- Judul Utama Poster: "BINGO NABUNG ${data.targetAmountFormatted.toUpperCase()}"
+- Sub-Judul: "Target: ${data.targetFocus} (5 Tahun)"
+- Tampilan Header Grid B-I-N-G-O (5 Kolom x 5 Baris = 25 Kotak Kartu Color-Coded).
+- Tema Warna Palette: Soft Aesthetic Pastel Color-Block (Hijau Pastel, Biru Sky, Oranye Coral, Kuning Warm, Pink Soft).
+- Afirmasi di Bagian Atas/Bawah Poster: "${data.affirmation}"
+
+=== STRUKTUR ISI KOTAK BINGO (Grid 5x5) ===
+Tampilkan 25 kotak berujung membulat (rounded cards) berisi nominal pecahan acak berikut dengan kotak cangkang (checkbox) putih kecil di bagian bawah setiap kartu untuk dicoret/dicentang:
+Pecahan nominal dalam kotak:
+- Kolom B: Rp ${fmt(step1)} (x5 kotak)
+- Kolom I: Rp ${fmt(step2)} (x5 kotak)
+- Kolom N: Rp ${fmt(step3)} (x5 kotak)
+- Kolom G: Rp ${fmt(step4)} (x5 kotak)
+- Kolom O: Rp ${fmt(step5)} (x5 kotak)
+
+=== CATATAN ATURAN GAME DI BAGIAN FOOTER POSTER ===
+1) Tiap kali menabung, coret 1 kotak dan transfer sesuai nominal angka di dalam kotak tersebut.
+2) Selesaikan 1 baris, kolom, atau diagonal penuh = Milestones BINGO tercapai senilai ${bingoPerLineReward}!
+3) Total 25 kotak tercoret = Target Utama ${data.targetAmountFormatted} TERCAPAI!
+
+Format Output: Siapkan gambaran visual poster printable resolusi tinggi (ratio 4:5 atau 9:16) yang bersih, modern, mudah dibaca, dan estetik untuk ditaruh di binder / disalin ke Canva/Midjourney/DALL-E.`;
+    }
+
+    // Copy Prompt Function
+    function copyToClipboard(elementId, successMessage) {
+      const promptText = document.getElementById(elementId).innerText;
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = promptText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      showToast(successMessage);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-text').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3000);
+    }
+
+    // Reset Application State
+    function resetApp() {
+      selectedAffirmation = "";
+      selectedAffId = null;
+      document.getElementById('finance-form').reset();
+      document.getElementById('custom-aff-input').value = "";
+      
+      for (let i = 1; i <= 4; i++) {
+        const card = document.getElementById(`aff-card-${i}`);
+        card.classList.remove('border-brand-emerald', 'bg-neutral-900/80');
+        card.classList.add('border-neutral-800');
+        card.querySelector('.check-icon').classList.add('opacity-0');
+      }
+
+      disableNextStep1();
+      goToStep(1);
+    }
+  </script>
+</body>
+</html>
